@@ -1,0 +1,32 @@
+# Fails any push or pull request that brings back the old brand name.
+# The pattern is written with [v] so this file never contains the name itself.
+name: Brand guard
+on:
+  push:
+  pull_request:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check files
+        run: |
+          if git grep -n -I -i -E 'e[v]il[ _.-]?a[v]enue' -- . ; then
+            echo "::error::The old brand name was found in the files above. Remove it before merging."
+            exit 1
+          fi
+      - name: Check commit messages
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            range="${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+          elif [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            range="${{ github.event.before }}..${{ github.sha }}"
+          else
+            range="${{ github.sha }}"
+          fi
+          if git log --format='%H %s%n%b' "$range" | grep -i -E 'e[v]il[ _.-]?a[v]enue'; then
+            echo "::error::The old brand name was found in a commit message."
+            exit 1
+          fi

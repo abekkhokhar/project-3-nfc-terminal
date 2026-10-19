@@ -11,7 +11,7 @@ pn532.SAM_configuration()
 COCO_APP = [0xC0, 0xC0, 0xC0]
 FARE_APP = [0x01, 0x00, 0x00]
 ID_FILE = 0x02          # card-ID data file (separate from value file 0x01)
-EVIL_KEY = bytes.fromhex("REPLACE_WITH_YOUR_OWN_AES128_KEY")
+OWNED_KEY = bytes.fromhex("REPLACE_WITH_YOUR_OWN_AES128_KEY")
 
 def cmd(c, data=b""):
     payload = [0x01, c] + list(data)
@@ -51,11 +51,11 @@ kind, app = identify_app()
 print(f"App type: {kind}")
 if app is None: print("Unknown card."); exit()
 
-# authenticate with Evil Avenue key
+# authenticate with owned key
 cmd(0x5A, bytes(app))
-if not aes_auth(EVIL_KEY):
-    print("Auth with Evil Avenue key failed."); exit()
-print("Authenticated with Evil Avenue key.")
+if not aes_auth(OWNED_KEY):
+    print("Auth with owned key failed."); exit()
+print("Authenticated with owned key.")
 
 # create the ID file (standard data file, 4 bytes, plain comm, free access)
 # CreateStdDataFile (0xCD): fileNo, commMode, accessRights(2), size(3 LE)

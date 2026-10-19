@@ -10,7 +10,7 @@ pn532.SAM_configuration()
 
 FARE_APP = [0x01, 0x00, 0x00]
 DEFAULT = bytes(16)
-EVIL_KEY = bytes.fromhex("REPLACE_WITH_YOUR_OWN_AES128_KEY")
+OWNED_KEY = bytes.fromhex("REPLACE_WITH_YOUR_OWN_AES128_KEY")
 
 def cmd(c, data=b""):
     payload = [0x01, c] + list(data)
@@ -47,5 +47,5 @@ if uid is None: print("No card."); exit()
 print(f"Card UID: {bytes(uid).hex()}")
 print("Testing OLD default key (should FAIL):")
 try_auth(DEFAULT, "default key")
-print("Testing NEW Evil Avenue key (should SUCCEED):")
-try_auth(EVIL_KEY, "evil key")
+print("Testing NEW owned key (should SUCCEED):")
+try_auth(OWNED_KEY, "owned key")

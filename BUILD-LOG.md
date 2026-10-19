@@ -138,7 +138,7 @@ The Commit is what makes it safe. Credit and Debit stage a change; nothing is re
 
 **The constraint that decided the architecture:** Raspberry Pi OS Lite has no desktop. A GUI window has nowhere to render.
 
-So the UI is a Flask web server on the Pi, serving HTML that any device on the network can open. Tap results push to the browser in real time over Server-Sent Events. That turned out better than a local GUI would have been — it works on a laptop, a phone, or a touchscreen, and it's the same stack as evilavenue.com.
+So the UI is a Flask web server on the Pi, serving HTML that any device on the network can open. Tap results push to the browser in real time over Server-Sent Events. That turned out better than a local GUI would have been — it works on a laptop, a phone, or a touchscreen, and it's the same stack as nevzyn.com.
 
 What got built:
 
@@ -147,7 +147,7 @@ What got built:
 - Two modes as tabs sharing one backend: **Terminal** and **Reload**.
 - The reload kiosk: amount buttons in $3 multiples up to $24, plus a custom option. Two factor indicator dots that light independently — one for the card, one for the PIN.
 - A balance check that reads without charging, and turns red on $0.
-- Space Mono throughout, Evil Avenue red as the accent.
+- Space Mono throughout, with red as the accent.
 
 ---
 
@@ -346,5 +346,5 @@ Built June 15 to July 16, 2026. Around a job, a semester, three other projects, 
 
 ---
 
-*Evil Avenue · New York City*
-**[evilavenue.com](https://evilavenue.com)**
+*Abek Khokhar · New York City*
+**[nevzyn.com](https://nevzyn.com)**

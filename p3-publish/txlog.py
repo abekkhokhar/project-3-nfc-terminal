@@ -1,5 +1,5 @@
 """
-Evil Avenue - Signed Transaction Log
+Signed Transaction Log
 Each entry is HMAC-signed and chained to the previous entry's signature.
 Altering or deleting any past entry breaks the chain - tamper evident.
 """

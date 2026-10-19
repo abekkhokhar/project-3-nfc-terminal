@@ -1,5 +1,5 @@
 [Unit]
-Description=Evil Avenue P3 - OMNY NFC Terminal
+Description=Project 3 - OMNY NFC Terminal
 After=network.target
 
 [Service]

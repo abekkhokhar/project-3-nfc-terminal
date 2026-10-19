@@ -11,7 +11,7 @@ pn532.SAM_configuration()
 
 FARE_APP = [0x01, 0x00, 0x00]
 DEFAULT_AES_KEY = bytes(16)
-# our new owned key - Evil Avenue fare key
+# our new owned key - owned fare key
 NEW_KEY = bytes.fromhex("REPLACE_WITH_YOUR_OWN_AES128_KEY")  # "Evi!AvefrareP3K!" ish
 KEY_VERSION = 0x01
 
@@ -83,7 +83,7 @@ sk, iv = aes_auth(DEFAULT_AES_KEY)
 if sk is None:
     print("Auth failed."); exit()
 print(f"  Session key: {sk.hex()}")
-print("Attempting ChangeKey (key 0: default -> Evil Avenue key)...")
+print("Attempting ChangeKey (key 0: default -> owned key)...")
 if change_key(sk, 0, NEW_KEY, KEY_VERSION):
     print(">>> KEY CHANGED SUCCESSFULLY")
 else:

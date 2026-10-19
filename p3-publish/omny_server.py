@@ -25,10 +25,10 @@ TRANSFER_WINDOW = 120
 PIN = "REPLACE_ME"
 MAX_RELOAD = 6000   # $60.00 server-side cap
 
-# --- Owned-key authentication (Evil Avenue key) ---
+# --- Owned-key authentication (owned key) ---
 import os as _os
 from Cryptodome.Cipher import AES as _AES
-EVIL_KEY = bytes.fromhex("REPLACE_WITH_YOUR_OWN_AES128_KEY")
+OWNED_KEY = bytes.fromhex("REPLACE_WITH_YOUR_OWN_AES128_KEY")
 ID_FILE = 0x02
 
 def read_card_id():
@@ -46,21 +46,21 @@ def read_card_id():
 def _rotl(b): return b[1:]+b[:1]
 def _rotr(b): return b[-1:]+b[:-1]
 
-def aes_auth_evil(key_no=0):
-    """AES-authenticate to the currently-selected app with the Evil Avenue key.
+def aes_auth_owned(key_no=0):
+    """AES-authenticate to the currently-selected app with the owned key.
        Returns True if the card proves it knows our key."""
     try:
         status, enc = cmd(0xAA, bytes([key_no]))
         if status != 0xAF or len(enc) < 16:
             return False
         enc = enc[:16]
-        rndB = _AES.new(EVIL_KEY, _AES.MODE_CBC, iv=bytes(16)).decrypt(enc)
+        rndB = _AES.new(OWNED_KEY, _AES.MODE_CBC, iv=bytes(16)).decrypt(enc)
         rndA = _os.urandom(16)
-        token = _AES.new(EVIL_KEY, _AES.MODE_CBC, iv=enc).encrypt(rndA + _rotl(rndB))
+        token = _AES.new(OWNED_KEY, _AES.MODE_CBC, iv=enc).encrypt(rndA + _rotl(rndB))
         status, enc2 = cmd(0xAF, token)
         if status != 0x00 or len(enc2) < 16:
             return False
-        rndA_card = _rotr(_AES.new(EVIL_KEY, _AES.MODE_CBC, iv=token[-16:]).decrypt(enc2[:16]))
+        rndA_card = _rotr(_AES.new(OWNED_KEY, _AES.MODE_CBC, iv=token[-16:]).decrypt(enc2[:16]))
         return rndA_card == rndA
     except ShortResponse:
         return False
@@ -148,7 +148,7 @@ def process_ride(uid_hex):
     if kind == "unknown":
         return event("unknown", uid_hex)
     # single auth (this is our access-control gate AND enables the ID read)
-    if not aes_auth_evil():
+    if not aes_auth_owned():
         return event("unknown", uid_hex, message="Card Not Authorized")
     card_id = read_card_id()
     if card_id is None:
@@ -261,7 +261,7 @@ def handle_reload_tap(uid_hex):
     if is_authorized():
         if kind=="fare":
             select(FARE_APP)
-            if not aes_auth_evil():
+            if not aes_auth_owned():
                 print(f"[omny] AUTH GATE FAILED (reload load) {uid_hex}")
                 broadcast(event("unknown",uid_hex,message="Card Not Authorized"))
                 return
@@ -284,9 +284,9 @@ def handle_reload_tap(uid_hex):
         return
     # not yet authorized: this tap is the Coco Bank card presenting factor 1
     if kind=="coco":
-        # AUTH GATE: Coco Bank card must prove it knows the Evil Avenue key
+        # AUTH GATE: Coco Bank card must prove it knows the owned key
         select(COCO_APP)
-        if not aes_auth_evil():
+        if not aes_auth_owned():
             print(f"[omny] AUTH GATE FAILED (coco) {uid_hex}")
             broadcast(event("wrongcard",uid_hex,message="Card Not Authorized"))
             return

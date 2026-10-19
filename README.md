@@ -1,4 +1,4 @@
-# Evil Avenue · Project 3
+# Abek Khokhar · Project 3
 ### An encrypted NFC fare terminal built on a Raspberry Pi and PN532, using MIFARE DESFire EV3 smartcards.
 
 ![Demo setup](Demo%20Setup.jpeg)
@@ -189,5 +189,5 @@ Code is in [`p3-publish/`](p3-publish/). Keys, the HMAC signing secret, and the 
 
 ---
 
-*Evil Avenue · New York City*
-**[evilavenue.com](https://evilavenue.com)**
+*Abek Khokhar · New York City*
+**[nevzyn.com](https://nevzyn.com)**

@@ -11,7 +11,7 @@ pn532.SAM_configuration()
 COCO_APP = [0xC0, 0xC0, 0xC0]
 FARE_APP = [0x01, 0x00, 0x00]
 DEFAULT = bytes(16)
-EVIL_KEY = bytes.fromhex("REPLACE_WITH_YOUR_OWN_AES128_KEY")
+OWNED_KEY = bytes.fromhex("REPLACE_WITH_YOUR_OWN_AES128_KEY")
 KEY_VERSION = 0x01
 
 def cmd(c, data=b""):
@@ -51,7 +51,7 @@ def identify():
     if cmd(0x5A, bytes(FARE_APP))[0] == 0x00: return "fare", FARE_APP
     return "unknown", None
 
-print("Tap a card to OWN it (change key to Evil Avenue key)...")
+print("Tap a card to OWN it (change key to owned key)...")
 uid = pn532.read_passive_target(timeout=10)
 if uid is None: print("No card."); exit()
 print(f"Card UID: {bytes(uid).hex()}")
@@ -64,8 +64,8 @@ if app is None:
 # check if already owned
 print("Checking current key...")
 cmd(0x5A, bytes(app))
-if aes_auth(EVIL_KEY) is not None:
-    print(">>> Already owned (Evil Avenue key works). Nothing to do.")
+if aes_auth(OWNED_KEY) is not None:
+    print(">>> Already owned (owned key works). Nothing to do.")
     exit()
 
 cmd(0x5A, bytes(app))
@@ -74,8 +74,8 @@ if sk is None:
     print(">>> Can't auth with default key either. Card in unknown key state."); exit()
 
 print("Authenticated with default. Changing key...")
-status = change_key(sk, 0, EVIL_KEY, KEY_VERSION)
+status = change_key(sk, 0, OWNED_KEY, KEY_VERSION)
 if status == 0x00:
-    print(">>> KEY CHANGED - card is now OWNED by Evil Avenue key")
+    print(">>> KEY CHANGED - card is now OWNED by our owned key")
 else:
     print(f">>> ChangeKey failed: 0x{status:02x}")

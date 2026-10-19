@@ -12,7 +12,7 @@ COCO_APP = [0xC0, 0xC0, 0xC0]
 FARE_APP = [0x01, 0x00, 0x00]
 FILE_ID = 0x01
 ID_FILE = 0x02
-EVIL_KEY = bytes.fromhex("REPLACE_WITH_YOUR_OWN_AES128_KEY")
+OWNED_KEY = bytes.fromhex("REPLACE_WITH_YOUR_OWN_AES128_KEY")
 
 def cmd(c, data=b""):
     payload = [0x01, c] + list(data)
@@ -57,12 +57,12 @@ print(f"UID: {uid_hex}{tag}")
 kind, app = identify()
 print(f"App: {kind}")
 if app is None:
-    print(">>> Not an Evil Avenue card."); exit()
+    print(">>> Not a provisioned card."); exit()
 
 cmd(0x5A, bytes(app))
-if not aes_auth(EVIL_KEY):
-    print(">>> AUTH FAILED - not authorized with the Evil Avenue key"); exit()
-print("Auth OK (Evil Avenue key)")
+if not aes_auth(OWNED_KEY):
+    print(">>> AUTH FAILED - not authorized with the owned key"); exit()
+print("Auth OK (owned key)")
 
 cid = read_card_id()
 print(f"Internal card ID: {cid if cid is not None else 'none'}")
